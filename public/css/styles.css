@@ -1,0 +1,335 @@
+/* styles.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #1a0000 0%, #330000 50%, #1a0000 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* Start Screen */
+.start-screen {
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+.title {
+    font-size: 4em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+    letter-spacing: 5px;
+}
+
+.subtitle {
+    font-size: 1.5em;
+    margin-bottom: 40px;
+    color: #ff6666;
+}
+
+.region-select {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.region-card {
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #ff0000;
+    padding: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 250px;
+}
+
+.region-card:hover {
+    transform: scale(1.05);
+    border-color: #fff;
+    box-shadow: 0 0 30px #ff0000;
+}
+
+.region-card h3 {
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+.region-card p {
+    color: #ccc;
+}
+
+input[type="text"] {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #ff0000;
+    color: #fff;
+    padding: 15px;
+    font-size: 1.2em;
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    display: block;
+}
+
+button {
+    background: #ff0000;
+    border: none;
+    color: #fff;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+button:hover {
+    background: #fff;
+    color: #ff0000;
+    box-shadow: 0 0 20px #ff0000;
+}
+
+button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+/* Game Screen */
+.game-screen {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.round-info {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #ff6666;
+}
+
+.fighters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.fighter {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #ff0000;
+    padding: 20px;
+}
+
+.fighter.opponent {
+    border-color: #ffaa00;
+}
+
+.fighter-name {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.health-bar {
+    background: #330000;
+    height: 30px;
+    margin-bottom: 15px;
+    border: 2px solid #ff0000;
+    position: relative;
+}
+
+.health-fill {
+    background: linear-gradient(90deg, #ff0000, #ff6666);
+    height: 100%;
+    transition: width 0.3s;
+}
+
+.health-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+.shield-indicator {
+    color: #00ff00;
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #ff6666;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9em;
+    flex: 1;
+    min-width: 100px;
+}
+
+.item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+}
+
+.item.used {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Chamber Display */
+.chamber-section {
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #ff0000;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.chamber-info {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+}
+
+.chamber-shots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.shot {
+    width: 30px;
+    height: 30px;
+    background: #333;
+    border: 2px solid #666;
+    border-radius: 50%;
+}
+
+.shot.live {
+    background: #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+}
+
+.shot.blank {
+    background: #fff;
+}
+
+/* Action Section */
+.action-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.action-log {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff0000;
+    padding: 20px;
+    margin-bottom: 20px;
+    min-height: 80px;
+    font-size: 1.3em;
+    color: #ffff00;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.action-buttons button {
+    flex: 1;
+    max-width: 300px;
+}
+
+.shoot-opponent {
+    background: #ff0000;
+}
+
+.shoot-self {
+    background: #ffaa00;
+}
+
+/* AI Taunt */
+.ai-taunt {
+    background: rgba(255, 170, 0, 0.2);
+    border: 2px solid #ffaa00;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 600px;
+    font-style: italic;
+    animation: pulse 1s;
+}
+
+/* Game Over */
+.game-over {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    border: 5px solid #ff0000;
+    padding: 40px;
+    margin: 40px auto;
+    max-width: 600px;
+}
+
+.game-over h2 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px #ff0000;
+}
+
+.score {
+    font-size: 2em;
+    margin: 20px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .title { font-size: 2.5em; }
+    .fighters { flex-direction: column; }
+    .region-select { flex-direction: column; align-items: center; }
+    .action-buttons { flex-direction: column; }
+}
