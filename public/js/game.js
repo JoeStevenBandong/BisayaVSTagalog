@@ -5,6 +5,93 @@ let gameId = null;
 let selectedRegion = null;
 const API_BASE = '/api';
 
+/* Sound Helpers */
+function playGunshot() {
+    const gun = document.getElementById("gunshotSound");
+    if (gun) {
+        gun.currentTime = 0;
+        gun.play();
+        console.log("Gunshot sound played!");
+    }
+}
+
+function playDryClick() {
+    const dry = document.getElementById("dryClickSound");
+    if (dry) {
+        dry.currentTime = 0;
+        dry.play();
+        console.log("Dry click sound played!");
+    }
+}
+
+function playClickSound() {
+    const click = document.getElementById("clickSound");
+    if (click) {
+        click.currentTime = 0;
+        click.play();
+        console.log("Click sound played!");
+    }
+}
+
+function playShieldActivate() {
+    const sfx = document.getElementById("shieldActivateSound");
+    if (sfx) {
+        sfx.currentTime = 0;
+        sfx.play();
+        console.log("Shield activated sound played!");
+    }
+}
+
+function playShieldBlock() {
+    const sfx = document.getElementById("shieldBlockSound");
+    if (sfx) {
+        sfx.currentTime = 0;
+        sfx.play();
+        console.log("Shield block sound played!");
+    }
+}
+
+function startBackgroundMusic() {
+    const music = document.getElementById("bgMusic");
+    if (music) {
+        music.volume = 0.5;
+        music.play().then(() => {
+            console.log("Background music started!");
+        }).catch(() => {
+            console.log("Background music will start after interaction.");
+        });
+    }
+}
+
+function checkAndPlayShotSound() {
+    if (!gameState || !gameState.lastAction) return;
+
+    const action = gameState.lastAction.toLowerCase();
+    console.log("Last action:", gameState.lastAction);
+
+    if (action.includes("blank")) {
+        playDryClick();
+    } else if (action.includes("live") || action.includes("hit")) {
+        playGunshot();
+    } else if (action.includes("shield blocked")) {
+        playShieldBlock();
+    } else {
+        console.log("No sound matched for this action.");
+    }
+}
+
+/* Attach click sound to UI buttons (not shoot buttons) */
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("button").forEach(btn => {
+        if (!btn.classList.contains("shoot-opponent") && !btn.classList.contains("shoot-self")) {
+            btn.addEventListener("click", () => {
+                playClickSound();
+            });
+        }
+    });
+});
+
+/* Game Logic */
 function selectRegion(region) {
     selectedRegion = region;
     document.querySelectorAll('.region-card').forEach(card => {
@@ -29,6 +116,10 @@ async function startGame() {
     gameState = await response.json();
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('gameScreen').style.display = 'block';
+
+    // Start background music here (fight screen only)
+    startBackgroundMusic();
+
     updateUI();
 }
 
@@ -48,8 +139,15 @@ function updateUI() {
     updateHealthBar('opponent', gameState.opponent);
 
     // Update shields
+    const prevPlayerShield = document.getElementById('playerShield').classList.contains('hidden');
+    const prevOpponentShield = document.getElementById('opponentShield').classList.contains('hidden');
+
     document.getElementById('playerShield').classList.toggle('hidden', !gameState.player.shield);
     document.getElementById('opponentShield').classList.toggle('hidden', !gameState.opponent.shield);
+
+    // Play shield activation sound when shield just appeared
+    if (prevPlayerShield && gameState.player.shield) playShieldActivate();
+    if (prevOpponentShield && gameState.opponent.shield) playShieldActivate();
 
     // Update items
     updateItems();
@@ -128,6 +226,10 @@ async function shootOpponent() {
 
     const result = await response.json();
     gameState = result.gameState;
+
+    // Play sound depending on live/blank/shield
+    checkAndPlayShotSound();
+
     updateUI();
 
     if (gameState.currentTurn === 'opponent' && gameState.gamePhase !== 'game_over') {
@@ -146,6 +248,10 @@ async function shootSelf() {
 
     const result = await response.json();
     gameState = result.gameState;
+
+    // Play sound depending on live/blank/shield
+    checkAndPlayShotSound();
+
     updateUI();
 
     if (gameState.currentTurn === 'opponent' && gameState.gamePhase !== 'game_over') {
@@ -164,6 +270,7 @@ async function useItem(itemId) {
 
     const result = await response.json();
     gameState = result.gameState;
+
     updateUI();
 }
 
@@ -178,6 +285,9 @@ async function doAITurn() {
 
     const result = await response.json();
     gameState = result.gameState;
+
+    // Play sound depending on live/blank/shield
+    checkAndPlayShotSound();
 
     if (result.taunt) {
         const tauntDiv = document.getElementById('aiTaunt');
