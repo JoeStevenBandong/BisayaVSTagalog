@@ -83,13 +83,55 @@ export class GameRoutes {
 
         const result = GameLogic.aiTurn(gameState);
         
-        // Generate AI taunt
+        // Generate AI taunt with better context
         let taunt: string | undefined;
-        if (Math.random() < 0.3) {
-            taunt = await this.aiService.generateTrashTalk(
-                gameState.opponent.region,
-                result.damage ? 'hit' : 'miss'
-            );
+        
+        // 70% chance to generate taunt (increased from 30%)
+        if (Math.random() < 0.7) {
+            // Build detailed situation for better taunts
+            let situation = '';
+            
+            if (result.damage && result.damage > 0) {
+                if (result.damage > 1) {
+                    situation = `critical_hit_dealt_${result.damage}_damage_player_health_${gameState.player.health}`;
+                } else {
+                    situation = `successful_hit_player_health_${gameState.player.health}`;
+                }
+            } else if (gameState.lastAction.includes('BLANK')) {
+                situation = 'shot_blank_keeps_turn';
+            } else if (gameState.lastAction.includes('shield')) {
+                situation = 'hit_blocked_by_shield';
+            } else {
+                situation = 'missed_shot';
+            }
+            
+            // Add health context
+            if (gameState.player.health <= 2) {
+                situation += '_player_low_health';
+            }
+            if (gameState.opponent.health <= 2) {
+                situation += '_ai_low_health';
+            }
+            
+            // Add win streak context
+            if (gameState.opponent.wins > gameState.player.wins) {
+                situation += '_ai_winning';
+            } else if (gameState.player.wins > gameState.opponent.wins) {
+                situation += '_player_winning';
+            }
+
+            try {
+                taunt = await this.aiService.generateTrashTalk(
+                    gameState.opponent.region,
+                    situation
+                );
+            } catch (error) {
+                console.error('Failed to generate taunt:', error);
+                // Fallback taunts
+                taunt = gameState.opponent.region === 'bisaya' 
+                    ? 'Unsa man? Hadlok ka?' 
+                    : 'Ano na? Takot ka ba?';
+            }
         }
 
         res.json({ ...result, taunt });

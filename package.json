@@ -1,6 +1,6 @@
 {
   "name": "bisaya-vs-tagalog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Buckshot Roulette-style Filipino street fight game - Bisaya vs Tagalog",
   "main": "dist/server.js",
   "scripts": {

@@ -3,87 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🥊 Bisaya vs Tagalog</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <title>🥊 Bisaya vs Tagalog 💥</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="blood-overlay" id="bloodOverlay"></div>
+    
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="sounds/background.mp3" type="audio/mpeg">
+    </audio>
+    
     <div class="container">
-        <!-- Start Screen -->
-        <div class="start-screen" id="startScreen">
-            <h1 class="title">🥊 BISAYA VS TAGALOG</h1>
-            <p class="subtitle">"this game does not promote racism"</p>
-            
-            <input type="text" id="playerName" placeholder="Enter your fighter name" maxlength="20">
-            
-            <div class="region-select">
-                <div class="region-card" onclick="selectRegion('bisaya')">
-                    <h3>🌴 BISAYA</h3>
-                    <p>Cebuano Pride</p>
-                    <p>Tubâ • Anting-Anting</p>
-                </div>
-                <div class="region-card" onclick="selectRegion('tagalog')">
-                    <h3>🏙️ TAGALOG</h3>
-                    <p>Manila Warrior</p>
-                    <p>Lambanog • Habas</p>
-                </div>
-            </div>
+        <header class="game-header">
+            <h1>🥊 BISAYA VS TAGALOG 💥</h1>
+            <p class="subtitle">Street Fight Roulette</p>
+        </header>
 
-            <button id="startBtn" onclick="startGame()" style="margin-top: 30px;" disabled>START FIGHT</button>
+        <!-- Setup Screen -->
+        <div class="setup-screen" id="setupScreen">
+            <div class="setup-form">
+                <h2>Choose Your Fighter!</h2>
+                <input type="text" id="playerName" placeholder="Enter your name" maxlength="15">
+                
+                <div class="region-selection">
+                    <div class="region-card" data-region="bisaya">
+                        <div class="region-icon">🏝️</div>
+                        <div class="region-name">BISAYA</div>
+                        <div class="region-desc">Cebuano Fighter</div>
+                    </div>
+                    <div class="region-card" data-region="tagalog">
+                        <div class="region-icon">🏙️</div>
+                        <div class="region-name">TAGALOG</div>
+                        <div class="region-desc">Manila Fighter</div>
+                    </div>
+                </div>
+                <button onclick="startFight()" class="start-btn" id="startBtn" disabled>LABAN NA! (Fight!)</button>
+            </div>
         </div>
 
-        <!-- Game Screen -->
-        <div class="game-screen" id="gameScreen">
-            <div class="game-header">
-                <div class="round-info" id="roundInfo">Round 1 of 3</div>
-            </div>
-
-            <div class="fighters">
-                <div class="fighter">
-                    <div class="fighter-name" id="playerName">PLAYER</div>
-                    <div class="health-bar">
-                        <div class="health-fill" id="playerHealth" style="width: 100%"></div>
-                        <div class="health-text" id="playerHealthText">6/6</div>
+        <!-- Main Game Screen -->
+        <div class="game-screen" id="gameScreen" style="display: none;">
+            <!-- Fighters Info -->
+            <div class="fighters-container">
+                <div class="fighter-panel player-panel">
+                    <div class="fighter-name" id="playerNameDisplay">Player</div>
+                    <div class="fighter-region" id="playerRegion">BISAYA</div>
+                    <div class="health-bar-container">
+                        <div class="health-bar">
+                            <div class="health-fill" id="playerHealthFill"></div>
+                        </div>
+                        <div class="health-text" id="playerHealth">6/6</div>
                     </div>
-                    <div class="shield-indicator hidden" id="playerShield">🛡️ SHIELD ACTIVE</div>
-                    <div><strong>Items:</strong></div>
-                    <div class="items" id="playerItems"></div>
+                    <div class="shield-indicator" id="playerShield" style="display:none;">🛡️ SHIELD</div>
                 </div>
 
-                <div class="fighter opponent">
-                    <div class="fighter-name" id="opponentName">OPPONENT</div>
-                    <div class="health-bar">
-                        <div class="health-fill" id="opponentHealth" style="width: 100%"></div>
-                        <div class="health-text" id="opponentHealthText">6/6</div>
+                <div class="vs-section">
+                    <div class="round-display">ROUND <span id="currentRound">1</span>/3</div>
+                    <div class="vs-text">VS</div>
+                </div>
+
+                <div class="fighter-panel opponent-panel">
+                    <div class="fighter-name" id="opponentNameDisplay">AI</div>
+                    <div class="fighter-region" id="opponentRegion">TAGALOG</div>
+                    <div class="health-bar-container">
+                        <div class="health-bar">
+                            <div class="health-fill" id="opponentHealthFill"></div>
+                        </div>
+                        <div class="health-text" id="opponentHealth">6/6</div>
                     </div>
-                    <div class="shield-indicator hidden" id="opponentShield">🛡️ SHIELD ACTIVE</div>
-                    <div><strong>Items: <span id="opponentItemCount">4</span></strong></div>
+                    <div class="shield-indicator" id="opponentShield" style="display:none;">🛡️ SHIELD</div>
                 </div>
             </div>
 
+            <!-- AI Taunt Box -->
+            <div class="taunt-box" id="tauntBox" style="display:none;">
+                <div class="taunt-icon">💬</div>
+                <div class="taunt-text" id="tauntText"></div>
+            </div>
+
+            <!-- Chamber Section -->
             <div class="chamber-section">
-                <div class="chamber-info" id="chamberInfo">Chamber: 🔴 5 Live | ⚪ 3 Blank</div>
-                <div class="chamber-shots" id="chamberShots"></div>
-            </div>
-
-            <div class="action-section">
-                <div class="action-log" id="actionLog">Select your action...</div>
-                
-                <div id="aiTaunt" class="ai-taunt hidden"></div>
-
-                <div class="action-buttons" id="actionButtons">
-                    <button class="shoot-opponent" onclick="shootOpponent()">SHOOT OPPONENT 🎯</button>
-                    <button class="shoot-self" onclick="shootSelf()">SHOOT SELF 🎲</button>
-                </div>
-
-                <div id="gameOverSection" class="game-over hidden">
-                    <h2 id="winnerText">GAME OVER</h2>
-                    <div class="score" id="finalScore">Score: 0-0</div>
-                    <button onclick="location.reload()">PLAY AGAIN</button>
+                <div class="chamber-title">CHAMBER 🔫</div>
+                <div class="bullet-count">
+                    <span class="live-bullets">🔴 <span id="liveCount">0</span> LIVE</span>
+                    <span class="blank-bullets">⚪ <span id="blankCount">0</span> BLANK</span>
                 </div>
             </div>
+
+            <!-- Items Panel -->
+            <div class="items-panel">
+                <div class="items-title">YOUR ITEMS</div>
+                <div class="items-grid" id="playerItems"></div>
+            </div>
+
+            <!-- Action Panel -->
+            <div class="action-panel">
+                <div class="action-message" id="actionMessage">Choose your move...</div>
+                <div class="action-buttons">
+                    <button class="action-btn shoot-opponent" onclick="shootOpponent()">
+                        <span class="btn-icon">🎯</span>
+                        <span class="btn-text">SHOOT OPPONENT</span>
+                    </button>
+                    <button class="action-btn shoot-self" onclick="shootSelf()">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">SHOOT SELF (Risk)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="multiplier-indicator" id="multiplierIndicator" style="display:none;">
+                ⚡ 2X DAMAGE ⚡
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal" id="gameOverModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="gameOverTitle">KNOCKOUT!</h2>
+                </div>
+                <div class="winner-display">
+                    <div class="winner-icon" id="winnerIcon">🏆</div>
+                    <div class="winner-name" id="winnerName">Winner</div>
+                    <div class="winner-subtitle" id="winnerSubtitle">Champion!</div>
+                </div>
+                <div class="match-stats" id="matchStats"></div>
+                <div class="modal-actions">
+                    <button onclick="nextRound()" class="modal-btn" id="nextRoundBtn">NEXT ROUND</button>
+                    <button onclick="newGame()" class="modal-btn">NEW GAME</button>
+                    <button onclick="backToSetup()" class="modal-btn secondary">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">AI is thinking...</div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="sound-toggle" onclick="toggleSound()">
+            <span id="soundIcon">🔊</span>
         </div>
     </div>
 
-    <script src="./js/game.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>
